@@ -88,8 +88,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hyper_news',
         'USER': 'root',
+<<<<<<< HEAD
         'PASSWORD': 'your_password_here',
         'HOST': 'host.docker.internal',
+=======
+        'PASSWORD': 'simphiwe@7',
+        'HOST': 'localhost',
+>>>>>>> master
         'PORT': '3308',
     }
 }
@@ -138,7 +143,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+<<<<<<< HEAD
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+=======
+>>>>>>> master
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
