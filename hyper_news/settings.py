@@ -88,10 +88,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hyper_news',
         'USER': 'root',
-        'PASSWORD': 'your_password_here',
-        'HOST': 'host.docker.internal',
-        # 'PASSWORD': 'nothing',
-        # 'HOST': 'localhost',
+        # 'PASSWORD': 'your_password_here',
+        # 'HOST': 'host.docker.internal',
+        'PASSWORD': 'nothing',
+        'HOST': 'localhost',
         'PORT': '3308',
     }
 }
