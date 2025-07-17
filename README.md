@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-# Django-Caps
-=======
 # 📰 News App
 
 A Django-powered News Application with multi-role access (Reader, Journalist, Editor), subscriptions, newsletter distribution, and RESTful API support.
+
+---
 
 ## 📌 Features
 
@@ -27,28 +26,35 @@ A Django-powered News Application with multi-role access (Reader, Journalist, Ed
   - Get articles based on subscriptions.  
   - API secured with token authentication.
 
-- **Social Media Integration** (Optional):  
+- **Social Media Integration (Optional)**:  
   - Auto-post approved articles to Twitter/X (via signals or views).
+
+---
 
 ## 🏗️ Tech Stack
 
 - **Backend**: Django, Django REST Framework  
 - **Database**: MariaDB / MySQL  
 - **Frontend**: Django Templates (Bootstrap recommended)  
-- **Auth**: Django built-in + custom roles  
-- **Optional**: Twitter API (X)
-
-## 🎥 API Endpoints
-
-- **Articles**: api/articles/ 
-
+- **Authentication**: Django built-in + custom roles  
+- **Optional Integration**: Twitter API (X)
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone the repo
+### 🔧 Requirements
+
+- Python 3.8+
+- pip / venv
+- Docker & Docker Compose (optional)
+- MariaDB or MySQL server (or use Docker)
+
+---
+
+### 🖥️ Run Locally (with Virtual Environment)
+
+1. **Clone the repository**
 ```bash
 git clone https://github.com/your-username/news-app.git
 cd news-app
->>>>>>> master
