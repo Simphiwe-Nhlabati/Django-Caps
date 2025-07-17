@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load permissions%}
+
+{% block title %}Read articles{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">All Articles</h2>
+    <div class="container mt-5">
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" class="img-fluid" alt="{{ article.title }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.description }}</p>
+                        <p class="card-text"><small class="text-muted">Published on {{ article.created_at }}</small></p>
+                        {% if article.journalist %}
+                            <p class="card-text"><strong>Journalist:</strong> {{ article.journalist.username }}</p>
+                        {% endif %}
+                        {% if article.publisher %}
+                            <p class="card-text"><strong>Publisher:</strong> {{ article.publisher.name }}</p>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'article_detail' pk=article.pk %}" class="btn btn-primary mt-auto">Read More</a>
+                        {% else %}
+                            <span>
+                                <a href="{% url 'login_user' %}" class="btn btn-primary mt-auto">Log in to Read</a>
+                                <a href="{% url 'register_user' %}" class="btn btn-primary mt-auto">Register to Read</a>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if user.is_authenticated and user|journalist_pem %}
+        <div class="mt-4">
+            <a href="{% url 'article_create' %}" class="btn btn-primary">Create New Article</a>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <p>Please <a href="{% url 'login_user' %}">log in as Journalist </a> to generate your articles.</p>
+        </div>
+    {% endif %}
+{% endblock %}

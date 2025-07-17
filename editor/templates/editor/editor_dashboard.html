@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editor Dashboard{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+<h2>Review Articles</h2>
+<div class="container mt-5">
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if article.image %}
+                    <div class="ratio ratio-4x3">
+                        <img src="{{ article.image.url }}" class="card-img-top object-fit-cover" alt="{{ article.title }}">
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><strong>{{ article.title }}</strong></h5>
+                    {% comment %} <p class="card-text">{{ article.content }}</p> {% endcomment %}
+                    <p class="card-text">Published on: {{ article.created_at }}</p>
+                    <form action="{% url 'article_delete' pk=article.pk %}" method="post">
+                        {% csrf_token %}
+                        <p><button type="submit" class="btn btn-danger">Delete Article</button></p>
+                    </form>
+                    <form action="{% url 'article_update' pk=article.pk %}" method="get">
+                        <p><button type="submit" class="btn btn-primary">Edit Article</button></p>
+                    </form>
+                    <form action="{% url 'article_detail' pk=article.pk %}" method="get">
+                        <p><button type="submit" class="btn btn-secondary">Read more</button></p>
+                    </form>
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ article.title }}</strong> by {{ article.journalist.username }}
+                        </div>
+                        <form method="post" action="{% url 'approve_article' pk=article.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        </form>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    {% empty %}
+        <li class="list-group-item">No newsletter to review.</li>
+    {% endfor %}
+</ul>
+<h2>Review Newsletters</h2>
+<div class="container mt-5">
+    <div class="row">
+        {% for newsletter in newsletters %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                {% if newsletter.image %}
+                    <div class="ratio ratio-4x3">
+                        <img src="{{ newsletter.image.url }}" class="card-img-top object-fit-cover" alt="{{ newsletter.title }}">
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ newsletter.title }}</h5>   
+                    {% comment %} <p class="card-text">{{ newsletter.content }}</p> {% endcomment %}
+                    <p class="card-text">Published on: {{ newsletter.created_at }}</p>
+                    <form action="{% url 'newsletter_delete' pk=newsletter.pk %}" method="post">
+                        {% csrf_token %}
+                        <p><button type="submit" class="btn btn-danger">Delete Newsletter</button></p>
+                    </form>
+                    <form action="{% url 'newsletter_update' pk=newsletter.pk %}" method="get">
+                        <p><button type="submit" class="btn btn-primary">Edit Newsletter</button></p>
+                    </form>
+                    <form action="{% url 'newsletter_detail' pk=newsletter.pk %}" method="get">
+                        <p><button type="submit" class="btn btn-secondary">View Newsletter</button></p>
+                    </form>
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>{{ newsletter.title }}</strong> by {{ newsletter.journalist.username }}
+                        <form method="post" action="{% url 'approve_newsletter' pk=newsletter.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        </form>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% empty %}
+        <li class="list-group-item">No newsletters to review.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
