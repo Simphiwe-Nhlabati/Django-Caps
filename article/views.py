@@ -39,6 +39,7 @@ def reader_pem(user):
 
 
 class Article_View(LoginRequiredMixin, ListView):
+    """View to list all articles."""
     model = Article
     template_name = 'article/article_list.html'
     context_object_name = 'articles'
@@ -50,6 +51,7 @@ class Article_View(LoginRequiredMixin, ListView):
     
 
 class Article_Detail(LoginRequiredMixin, DetailView):
+    """View to display details of a specific article."""
     model = Article
     template_name = 'article/article_detail.html'
     context_object_name = 'article'
