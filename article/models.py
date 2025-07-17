@@ -23,6 +23,7 @@ class Publisher(models.Model):
     
 
 class Article(models.Model):
+    """Model representing an article in the system."""
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=500)
     image = models.ImageField(upload_to='articles/', blank=True, null=True)
