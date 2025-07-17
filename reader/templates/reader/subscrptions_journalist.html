@@ -1,0 +1,52 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block title %}Subscriptions to Journalists{% endblock %}
+
+{% block content %}
+<body>
+    <h1 class="head1">Subscriptions to Journalists</h1>
+    <hr>
+
+    <div class="container">
+        <div class="row">
+            {% for journalist in journalists %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{% static 'journalist.image' %}" class="img-fluid product-image" alt="{{journalist.description}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ journalist.name }}</h5>
+                        <p class="card-text">{{ journalist.description }}</p>
+                        <form action="{% url 'subscribe_journalist' journalist.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Subscribe</button>
+                        </form>
+                        {% empty %}
+                        <li>No journalists available for subscription</li>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <h4 class="mt-4">Journalists</h4>
+    <ul class="list-group">
+    {% for journalist in user.subscribed_journalists.all %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ journalist.username }}
+            <a href="{% url 'unsubscribe-journalist' journalist.pk %}" class="btn btn-sm btn-danger">Unsubscribe</a>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No subscriptions to journalists.</li>
+    {% endfor %}
+        <a class="nav-link" href="{% url 'register_user' %}"><button type="button" class="btn btn-primary">Home</a></button>
+    </ul>
+</body>
+
+{% endblock %}
+
+
+

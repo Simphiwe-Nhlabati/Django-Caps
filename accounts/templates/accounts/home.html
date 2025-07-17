@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load permissions %}
+
+{% block title %}Hyper News{% endblock %}
+
+{% block content %}
+<body>
+    <h1 class="head1">Hyper news presents to you the news</h1>
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</br>
+    <h2 class="head2" align="center">Articles</h2>
+    <div class="container mt-5">
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if article.image %}
+                        <div class="ratio ratio-4x3">
+                            <img src="{{ article.image.url }}" class="card-img-top object-fit-cover" alt="{{ article.title }}">
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.description }}</p>
+                        <p class="card-text"><small class="text-muted">Published on {{ article.created_at }}</small></p>
+                        {% if article.journalist %}
+                            <p class="card-text"><strong>Journalist:</strong> {{ article.journalist.username }}</p>
+                        {% endif %}
+                        {% if article.publisher %}
+                            <p class="card-text"><strong>Publisher:</strong> {{ article.publisher.name }}</p>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'article_detail' pk=article.pk %}" class="btn btn-primary mt-auto">Read More</a>
+                        {% else %}
+                            <span>
+                                <a href="{% url 'login_user' %}" class="btn btn-primary mt-auto">Log in to Read</a>
+                                <a href="{% url 'register_user' %}" class="btn btn-warning mt-auto">Register to Read</a>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</br>
+    <hr>
+    <h2 class="head2" align="center">Newsletter</h2>
+     <div class="container mt-5">
+        <div class="row">
+            {% for newsletter in newsletters %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if newsletter.image %}
+                        <div class="ratio ratio-4x3">
+                            <img src="{{ newsletter.image.url }}" class="card-img-top object-fit-cover" alt="{{ newsletter.title }}">
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ newsletter.title }}</h5>
+                        <p class="card-text">{{ article.description }}</p>
+                        <p class="card-text"><small class="text-muted">Published on {{ newsletter.created_at }}</small></p>
+                        {% if newsletter.journalist %}
+                            <p class="card-text"><strong>Journalist:</strong> {{ newsletter.journalist.username }}</p>
+                        {% endif %}
+                        {% if newsletter.publisher %}
+                            <p class="card-text"><strong>Publisher:</strong> {{ newsletter.publisher.name }}</p>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'newsletter_detail' pk=newsletter.pk %}" class="btn btn-primary mt-auto">Read More</a>
+                        {% else %}
+                            <span>
+                                <a href="{% url 'login_user' %}" class="btn btn-primary mt-auto">Log in to Read</a>
+                                <a href="{% url 'register_user' %}" class="btn btn-warning mt-auto">Register to Read</a>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+   
+    <hr>
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    {% if user.is_authenticated and user|journalist_pem %}
+                        <h2>Welcome back {{ user.username }}</h2>
+                        <p>Make a selection down below </p>
+                        <div>
+                            <a>
+                                <button type="button" class="btn btn-primary">
+                                    <a class="nav-link" href="{% url 'article_create' %}">Generate your article</a>
+                                </button>
+                            </a>
+                            <a>
+                                <button type="button" class="btn btn-success">
+                                    <a class="nav-link" href="{% url 'journalist_dashboard' %}">Dashboard</a>
+                                </button>
+                            </a>
+                            <a>
+                                <button type="button" class="btn btn-warning">
+                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
+                                </button>
+                            </a>
+                        </div>
+
+                    {% elif user.is_authenticated and user|editor_pem %}
+                        <h2>Welcome back {{ user.username }}</h2>
+                        <p>Make a selection down below </p>
+                        <div>
+                            <a>
+                                <button type="button" class="btn btn-success">
+                                    <a class="nav-link" href="{% url 'dashboard_editor' %}">Dashboard</a>
+                                </button>
+                            </a>
+                            <a>
+                                <button type="button" class="btn btn-warning">
+                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
+                                </button>
+                            </a>
+                        </div>
+
+                    {% elif user.is_authenticated and user|reader_pem %}
+                        <h2>Welcome back {{ user.username }}</h2>
+                        <p>Make a selection down below </p>
+                        <div>
+                            <a href="{% url 'reader_dashboard' %}" class="btn btn-success me-2">Dashboard</a>
+                            <a>
+                                <button type="button" class="btn btn-warning">
+                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
+                                </button>
+                            </a>
+                        </div>
+                    
+                    {% else %}
+                        <h2>Signup/Login form</h2>
+                        <p>Make a selection down below </p> 
+                        </br>
+                        <p><a class="nav-link" href="{% url 'login_user' %}"><button type="button" class="btn btn-primary">Login to your account</a></button>
+                        </p>
+                        <p><a class="nav-link" href="{% url 'register_user' %}"><button type="button" class="btn btn-primary">Register your account</a></button>
+                        </p>
+                        </br>
+                        
+                    {% endif %} 
+                    <p>Hyper News is a news website that provides the latest news and updates on various topics. Stay informed with our articles and newsletters.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    </footer>
+</body>
+
+

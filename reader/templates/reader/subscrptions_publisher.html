@@ -1,0 +1,49 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block title %}Subscriptions to Publishers{% endblock %}
+
+{% block content %}
+<body>
+    <h1 class="head1">Subscriptions to Publishers</h1>
+    <hr>
+
+    <div class="container">
+        <div class="row">
+            {% for publisher in publishers %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{% static 'publisher.image' %}" class="img-fluid product-image" alt="{{publisher.description}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ publisher.name }}</h5>
+                        <p class="card-text">{{ publisher.description }}</p>
+                        <form action="{% url 'subscribe_publisher' publisher.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Subscribe</button>
+                        </form>
+                        {% empty %}
+                        <li>No publishers available for subscription</li>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <h4 class="mt-4">Publishers</h4>
+    <ul class="list-group">
+        {% for publisher in user.subscribed_publishers.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ publisher.username }}
+                <a href="{% url 'unsubscribe-publisher' publisher.pk %}" class="btn btn-sm btn-danger">Unsubscribe</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No subscriptions to publishers.</li>
+        {% endfor %}
+        <a class="nav-link" href="{% url 'register_user' %}"><button type="button" class="btn btn-primary">Home</a></button>
+    </ul>
+    
+
+</body>
+{% endblock %}

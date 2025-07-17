@@ -1,0 +1,75 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block title %}Publisher Dashboard{% endblock %}
+
+{% block content %}
+<body>
+    <h1 class="head1">Here are your published Articles and Newsletter </h1>
+    </br>
+    <h2 class="head2">Here are your Articles</h2>
+    <div class="container">
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{{ article.image.url }}" class="img-fluid product-image" alt="{{ article.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content }}</p>
+                        <p class="card-text">Published on: {{ article.published_date }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-md-12">
+                <p>No articles have been uploaded yet</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    </br>
+    <h2 class="head2">Here are your Newsletters</h2>
+    <div class="container">
+        <div class="row">
+            {% for newsletter in newsletters %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <img src="{{ newsletter.image.url }}" class="img-fluid product-image" alt="{{ newsletter.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ newsletter.title }}</h5>
+                        <p class="card-text">{{ newsletter.content }}</p>
+                        <p class="card-text">Published on: {{ newsletter.published_date }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-md-12">
+                <p>No newsletters have been generated yet</p>
+            </div>
+            {% endfor %}
+
+            <h2 class="head2">Here are your Journalists and Editors</h2>
+            <div class="col-md-12">
+                <h3>Editors</h3>
+                {% for editor in editors.news_list %}
+                        <p>{{ editor.username }}</p>
+                    {% empty %}
+                        <p>No editors assigned yet.</p>
+                    {% endfor %}
+
+                    <h3>Journalists</h3>
+                    {% for journalist in journalists.news_list %}
+                        <p>{{ journalist.username }}</p>
+                    {% empty %}
+                        <p>No journalists assigned yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
+
+
