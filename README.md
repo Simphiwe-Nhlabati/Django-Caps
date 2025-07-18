@@ -1,4 +1,4 @@
-# 📰 News App
+# 📰 Hyper_News App
 
 A Django-powered News Application with multi-role access (Reader, Journalist, Editor), subscriptions, newsletter distribution, and RESTful API support.
 
@@ -56,5 +56,5 @@ A Django-powered News Application with multi-role access (Reader, Journalist, Ed
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/news-app.git
+git clone https://github.com/Simphiwe-Nhlabati/Django-Caps.git
 cd news-app
