@@ -88,13 +88,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hyper_news',
         'USER': 'root',
-        # 'PASSWORD': 'your_password_here',
-        # 'HOST': 'host.docker.internal',
         'PASSWORD': 'nothing',
         'HOST': 'localhost',
         'PORT': '3308',
     }
 }
+
+# Docker password configuration:
+# 'PASSWORD': 'your_password_here',
+# 'HOST': 'host.docker.internal',
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
