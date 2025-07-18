@@ -57,4 +57,3 @@ A Django-powered News Application with multi-role access (Reader, Journalist, Ed
 1. **Clone the repository**
 ```bash
 git clone https://github.com/Simphiwe-Nhlabati/Django-Caps.git
-cd news-app
