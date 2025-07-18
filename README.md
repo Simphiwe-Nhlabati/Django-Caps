@@ -58,17 +58,3 @@ A Django-powered News Application with multi-role access (Reader, Journalist, Ed
 ```bash
 git clone https://github.com/Simphiwe-Nhlabati/Django-Caps.git
 
-
-# Database settings
-DB_NAME=hyper_news
-DB_USER=root
-DB_PASSWORD=nothing
-DB_HOST=localhost
-DB_PORT=3308
-
-# Email settings
-EMAIL_HOST=your_email_host
-EMAIL_PORT=587
-EMAIL_HOST_USER=your_email_address
-EMAIL_HOST_PASSWORD=your_email_password
-EMAIL_USE_TLS=True
