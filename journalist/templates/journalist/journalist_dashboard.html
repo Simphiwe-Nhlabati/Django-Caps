@@ -2,90 +2,224 @@
 
 {% load static %}
 
-{% block title %}Journalist Dashboard{% endblock %}
+{% block title %}Journalist Dashboard - Hyper News{% endblock %}
 
 {% block content %}
-<body>
-    <h1 class="head1">Here are your Articles and Newsletter </h1>
-    <h3 class="head2">Welcome back {{ user.username }}</h3>
-    {% if messages %}
-    <div class="mt-3">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    </br>
-    
-    
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5>Here are your articles </h5>
-                    </div>
-                    <div class="card-body">
-                        {% if dash_list.articles %}
-                            <ul class="list-group mb-3">
-                                {% for article in dash_list.articles %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <strong>{{ article.title }}:</strong>
-                                         
-                                    </br> 
-                                        <span>
-                                            {{ article.description }}
-                                        </span>
-                                        
-                                        <span>
-                                
-                                            <a href="{% url 'article_detail' pk=article.pk %}" class="btn btn-sm btn-outline-primary me-2">View more</a>
-        
-                                        </span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p class="card-text">You haven't added any articles yet.</p>
-                        {% endif %}
-                        <a href="{% url 'article_create' %}" class="btn btn-sm btn-success mt-2">Generate article</a>
-                    </div>
+<div class="container-fluid py-5">
+    <!-- Header Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 text-center">
+            <h1 class="head1 mb-3">Journalist Dashboard</h1>
+            <h3 class="head2 mb-4">Welcome back, {{ user.username }}!</h3>
+            <p class="lead text-muted">Manage your articles and newsletters from your personal dashboard.</p>
+            
+            {% if messages %}
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
+        </div>
+    </div>
 
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-warning text-dark">
-                        <h5>Here are your newsletters</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if dash_list.newsletters %}
-                            <ul class="list-group list-group-flush">
-                                {% for newsletter in dash_list.newsletters %}
-                                    <li class="list-group-item">
-                                        {{ newsletter.title }} - 
-                                        {{ newsletter.description }}
-                                        
-                                        <span>
-                                        <a href="{% url 'newsletter_detail' pk=newsletter.pk %}" class="btn btn-sm btn-outline-primary me-2">View more</a>
-                                        </span>
-                                        {% comment %} <span>
-                                            <a href="{% url 'newsletter_update' pk=newsletter.pk %}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
-                                            <a href="{% url 'newsletter_delete' pk=newsletter.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                                        </span> {% endcomment %}
-
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p class="card-text">You haven't added any newsletter yet.</p>
-                        {% endif %}
-                        <a href="{% url 'newsletter_create' %}" class="btn btn-sm btn-success mt-2">Generate Newsletter</a>
+    <!-- Quick Actions -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-primary mb-3">
+                        <i class="fas fa-plus-circle me-2"></i>Quick Actions
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{% url 'article_create' %}" class="btn btn-primary w-100">
+                                <i class="fas fa-newspaper me-2"></i>Create New Article
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'newsletter_create' %}" class="btn btn-success w-100">
+                                <i class="fas fa-envelope me-2"></i>Create Newsletter
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</body>
+
+    <!-- Dashboard Content -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="row g-4">
+                <!-- Articles Section -->
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 h-100">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-newspaper me-2"></i>Your Articles
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if dash_list.articles %}
+                                <div class="list-group list-group-flush">
+                                    {% for article in dash_list.articles %}
+                                        <div class="list-group-item border-0 px-0 py-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="fw-bold text-primary mb-1">{{ article.title }}</h6>
+                                                <span class="badge {% if article.approved %}bg-success{% else %}bg-warning{% endif %}">
+                                                    {% if article.approved %}
+                                                        <i class="fas fa-check me-1"></i>Approved
+                                                    {% else %}
+                                                        <i class="fas fa-clock me-1"></i>Pending
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <p class="text-muted small mb-2">{{ article.description }}</p>
+                                            <div class="d-flex align-items-center">
+                                                <small class="text-muted me-3">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    {{ article.created_at|date:"M d, Y" }}
+                                                </small>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'article_detail' pk=article.pk %}" 
+                                                       class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                    <a href="{% url 'article_update' pk=article.pk %}" 
+                                                       class="btn btn-outline-secondary btn-sm">
+                                                        <i class="fas fa-edit me-1"></i>Edit
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No Articles Yet</h6>
+                                    <p class="text-muted small">Start creating your first article to get started.</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'article_create' %}" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus me-2"></i>Create New Article
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newsletters Section -->
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 h-100">
+                        <div class="card-header bg-success text-white py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-envelope me-2"></i>Your Newsletters
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if dash_list.newsletters %}
+                                <div class="list-group list-group-flush">
+                                    {% for newsletter in dash_list.newsletters %}
+                                        <div class="list-group-item border-0 px-0 py-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="fw-bold text-success mb-1">{{ newsletter.title }}</h6>
+                                                <span class="badge {% if newsletter.approved %}bg-success{% else %}bg-warning{% endif %}">
+                                                    {% if newsletter.approved %}
+                                                        <i class="fas fa-check me-1"></i>Approved
+                                                    {% else %}
+                                                        <i class="fas fa-clock me-1"></i>Pending
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <p class="text-muted small mb-2">{{ newsletter.description }}</p>
+                                            <div class="d-flex align-items-center">
+                                                <small class="text-muted me-3">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    {{ newsletter.created_at|date:"M d, Y" }}
+                                                </small>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'newsletter_detail' pk=newsletter.pk %}" 
+                                                       class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                    <a href="{% url 'newsletter_update' pk=newsletter.pk %}" 
+                                                       class="btn btn-outline-secondary btn-sm">
+                                                        <i class="fas fa-edit me-1"></i>Edit
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No Newsletters Yet</h6>
+                                    <p class="text-muted small">Start creating your first newsletter to engage with readers.</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'newsletter_create' %}" class="btn btn-success w-100">
+                                    <i class="fas fa-plus me-2"></i>Create Newsletter
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-primary mb-3">
+                        <i class="fas fa-chart-bar me-2"></i>Your Statistics
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="h4 text-primary mb-1">{{ dash_list.articles|length }}</div>
+                                <small class="text-muted">Total Articles</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="h4 text-success mb-1">{{ dash_list.newsletters|length }}</div>
+                                <small class="text-muted">Total Newsletters</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="h4 text-warning mb-1">
+                                    {{ dash_list.articles|length|add:dash_list.newsletters|length }}
+                                </div>
+                                <small class="text-muted">Total Content</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="h4 text-info mb-1">{{ user.username }}</div>
+                                <small class="text-muted">Your Profile</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
     

@@ -1,38 +1,284 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Register user{% endblock %}
+{% block title %}Register - Hyper News{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container-fluid py-5">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg p-4">
-                <h2 class="card-title text-center mb-4">Register your account</h2>
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Join Hyper News
+                    </h3>
+                    <p class="mb-0 opacity-75">Create your account and start exploring</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Registration Error:</strong> Please correct the errors below.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
 
-                {% if form.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        Please correct the errors below.
-                    </div>
-                {% endif %}
-                <div class="container-fluid">
-                    <form method="post" class="form">
+                    <form method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
-                        {{ form.as_p }}
-                    
-                        </br>
-                    
-                        <p>
-                        <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
-                        </p>
+                        
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>Username
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
 
-                        <p class="text-center mt-3">
-                            Already have an account? <a href="{% url 'login_user' %}">Login here</a>
-                        </p>
+                        <!-- First Name Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-id-card me-2"></i>First Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                {{ form.first_name }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Last Name Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-id-card me-2"></i>Last Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                {{ form.last_name }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                {{ form.email }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                {{ form.password1 }}
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword1">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Confirm Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                {{ form.password2 }}
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword2">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Position Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.position.id_for_label }}" class="form-label">
+                                <i class="fas fa-users me-2"></i>Select Your Role
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-users"></i>
+                                </span>
+                                {{ form.position }}
+                            </div>
+                            {% if form.position.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.position.errors.0 }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Choose your role: Reader (view content), Journalist (create content), or Editor (approve content)
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                Already have an account? 
+                                <a href="{% url 'login_user' %}" class="text-decoration-none fw-bold">
+                                    Login here
+                                </a>
+                            </p>
+                        </div>
                     </form>
+                </div>
+                
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        By creating an account, you agree to our Terms of Service and Privacy Policy
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Benefits Card -->
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="text-center text-muted mb-3">
+                        <i class="fas fa-star me-2"></i>Why Choose Hyper News?
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-newspaper text-primary me-2"></i>
+                                <small class="text-muted">Latest News & Updates</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users text-success me-2"></i>
+                                <small class="text-muted">Community Engagement</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-bell text-warning me-2"></i>
+                                <small class="text-muted">Real-time Notifications</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-shield-alt text-info me-2"></i>
+                                <small class="text-muted">Secure & Reliable</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Password toggle functions
+function togglePassword(passwordId, buttonId) {
+    const password = document.getElementById(passwordId);
+    const button = document.getElementById(buttonId);
+    const icon = button.querySelector('i');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+document.getElementById('togglePassword1').addEventListener('click', function() {
+    togglePassword('{{ form.password1.id_for_label }}', 'togglePassword1');
+});
+
+document.getElementById('togglePassword2').addEventListener('click', function() {
+    togglePassword('{{ form.password2.id_for_label }}', 'togglePassword2');
+});
+
+// Add Bootstrap classes to form fields
+document.addEventListener('DOMContentLoaded', function() {
+    const formFields = document.querySelectorAll('input, select');
+    formFields.forEach(field => {
+        field.classList.add('form-control');
+    });
+});
+</script>
 {% endblock %}

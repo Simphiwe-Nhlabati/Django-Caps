@@ -1,31 +1,45 @@
-# Python
+# # Python
+# __pycache__/
+# *.py[cod]
+# *.sqlite3
+
+# # Environment
+# .env
+# venv/
+# ENV/
+# env/
+# *.egg-info/
+
+# # Django specific
+# db.sqlite3
+# *.log
+
+# # VS Code and other editors
+# .vscode/
+# .idea/
+
+# # Byte-compiled / optimized / DLL files
+# *.pyc
+# *.pyo
+# *.pyd
+# .Python
+
+# # Sphinx build
+# docs/_build/
+
+# # Pytest
+# .cache/
+
 __pycache__/
 *.py[cod]
 *.sqlite3
-
-# Environment
-.env
-venv/
-ENV/
-env/
-*.egg-info/
-
-# Django specific
-db.sqlite3
 *.log
-
-# VS Code and other editors
-.vscode/
+*.env
+*.db
+venv/
+staticfiles/
+media/
+.DS_Store
 .idea/
-
-# Byte-compiled / optimized / DLL files
-*.pyc
-*.pyo
-*.pyd
-.Python
-
-# Sphinx build
-docs/_build/
-
-# Pytest
-.cache/
+.vscode/
+docker-compose.override.yml

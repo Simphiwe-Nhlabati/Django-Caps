@@ -2,165 +2,283 @@
 {% load static %}
 {% load permissions %}
 
-{% block title %}Hyper News{% endblock %}
+{% block title %}Hyper News {% endblock %}
 
 {% block content %}
-<body>
-    <h1 class="head1">Hyper news presents to you the news</h1>
-    {% if messages %}
-    <div class="mt-3">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+<div class="container-fluid py-5">
+    <!-- Hero Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 text-center">
+            <h1 class="head1 mb-4">Hyper News presents to you the latest news</h1>
+            <p class="lead text-muted mb-4">Stay informed with our curated collection of articles and newsletters from trusted journalists and publishers.</p>
+            
+            {% if messages %}
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Articles Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="head2 mb-4">
+                <i class="fas fa-newspaper me-3"></i>Latest Articles
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        {% for article in articles %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card article-card h-100 shadow-sm">
+                {% if article.image %}
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-newspaper me-1"></i>Article
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-newspaper fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold text-primary">{{ article.title }}</h5>
+                    <p class="card-text text-muted flex-grow-1">{{ article.description }}</p>
+                    
+                    <div class="card-text mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ article.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+                    
+                    {% if article.journalist %}
+                        <div class="card-text mb-2">
+                            <small class="text-info">
+                                <i class="fas fa-user-edit me-1"></i>
+                                <strong>Journalist:</strong> {{ article.journalist.username }}
+                            </small>
+                        </div>
+                    {% endif %}
+                    
+                    {% if article.publisher %}
+                        <div class="card-text mb-3">
+                            <small class="text-success">
+                                <i class="fas fa-building me-1"></i>
+                                <strong>Publisher:</strong> {{ article.publisher.name }}
+                            </small>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-auto">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'article_detail' pk=article.pk %}" class="btn btn-primary w-100">
+                                <i class="fas fa-eye me-2"></i>Read More
+                            </a>
+                        {% else %}
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'login_user' %}" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login to Read
+                                </a>
+                                <a href="{% url 'register_user' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-user-plus me-2"></i>Register
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="card">
+                <div class="card-body py-5">
+                    <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">No articles available at the moment</h5>
+                    <p class="text-muted">Check back later for the latest news!</p>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
-    {% endif %}
-</br>
-    <h2 class="head2" align="center">Articles</h2>
-    <div class="container mt-5">
-        <div class="row">
-            {% for article in articles %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if article.image %}
-                        <div class="ratio ratio-4x3">
-                            <img src="{{ article.image.url }}" class="card-img-top object-fit-cover" alt="{{ article.title }}">
-                        </div>
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ article.title }}</h5>
-                        <p class="card-text">{{ article.description }}</p>
-                        <p class="card-text"><small class="text-muted">Published on {{ article.created_at }}</small></p>
-                        {% if article.journalist %}
-                            <p class="card-text"><strong>Journalist:</strong> {{ article.journalist.username }}</p>
-                        {% endif %}
-                        {% if article.publisher %}
-                            <p class="card-text"><strong>Publisher:</strong> {{ article.publisher.name }}</p>
-                        {% endif %}
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'article_detail' pk=article.pk %}" class="btn btn-primary mt-auto">Read More</a>
-                        {% else %}
-                            <span>
-                                <a href="{% url 'login_user' %}" class="btn btn-primary mt-auto">Log in to Read</a>
-                                <a href="{% url 'register_user' %}" class="btn btn-warning mt-auto">Register to Read</a>
-                            </span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+
+    <!-- Newsletter Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="head2 mb-4">
+                <i class="fas fa-envelope me-3"></i>Newsletters
+            </h2>
         </div>
     </div>
-</br>
-    <hr>
-    <h2 class="head2" align="center">Newsletter</h2>
-     <div class="container mt-5">
-        <div class="row">
-            {% for newsletter in newsletters %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if newsletter.image %}
-                        <div class="ratio ratio-4x3">
-                            <img src="{{ newsletter.image.url }}" class="card-img-top object-fit-cover" alt="{{ newsletter.title }}">
-                        </div>
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ newsletter.title }}</h5>
-                        <p class="card-text">{{ article.description }}</p>
-                        <p class="card-text"><small class="text-muted">Published on {{ newsletter.created_at }}</small></p>
-                        {% if newsletter.journalist %}
-                            <p class="card-text"><strong>Journalist:</strong> {{ newsletter.journalist.username }}</p>
-                        {% endif %}
-                        {% if newsletter.publisher %}
-                            <p class="card-text"><strong>Publisher:</strong> {{ newsletter.publisher.name }}</p>
-                        {% endif %}
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'newsletter_detail' pk=newsletter.pk %}" class="btn btn-primary mt-auto">Read More</a>
-                        {% else %}
-                            <span>
-                                <a href="{% url 'login_user' %}" class="btn btn-primary mt-auto">Log in to Read</a>
-                                <a href="{% url 'register_user' %}" class="btn btn-warning mt-auto">Register to Read</a>
+    
+    <div class="row g-4 mb-5">
+        {% for newsletter in newsletters %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card newsletter-card h-100 shadow-sm">
+                {% if newsletter.image %}
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ newsletter.image.url }}" class="card-img-top" alt="{{ newsletter.title }}" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-success">
+                                <i class="fas fa-envelope me-1"></i>Newsletter
                             </span>
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    <hr>
-   
-    <hr>
-    <footer class="mt-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    {% if user.is_authenticated and user|journalist_pem %}
-                        <h2>Welcome back {{ user.username }}</h2>
-                        <p>Make a selection down below </p>
-                        <div>
-                            <a>
-                                <button type="button" class="btn btn-primary">
-                                    <a class="nav-link" href="{% url 'article_create' %}">Generate your article</a>
-                                </button>
-                            </a>
-                            <a>
-                                <button type="button" class="btn btn-success">
-                                    <a class="nav-link" href="{% url 'journalist_dashboard' %}">Dashboard</a>
-                                </button>
-                            </a>
-                            <a>
-                                <button type="button" class="btn btn-warning">
-                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
-                                </button>
-                            </a>
-                        </div>
-
-                    {% elif user.is_authenticated and user|editor_pem %}
-                        <h2>Welcome back {{ user.username }}</h2>
-                        <p>Make a selection down below </p>
-                        <div>
-                            <a>
-                                <button type="button" class="btn btn-success">
-                                    <a class="nav-link" href="{% url 'dashboard_editor' %}">Dashboard</a>
-                                </button>
-                            </a>
-                            <a>
-                                <button type="button" class="btn btn-warning">
-                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
-                                </button>
-                            </a>
-                        </div>
-
-                    {% elif user.is_authenticated and user|reader_pem %}
-                        <h2>Welcome back {{ user.username }}</h2>
-                        <p>Make a selection down below </p>
-                        <div>
-                            <a href="{% url 'reader_dashboard' %}" class="btn btn-success me-2">Dashboard</a>
-                            <a>
-                                <button type="button" class="btn btn-warning">
-                                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
-                                </button>
-                            </a>
-                        </div>
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-envelope fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold text-success">{{ newsletter.title }}</h5>
+                    <p class="card-text text-muted flex-grow-1">{{ newsletter.description }}</p>
                     
-                    {% else %}
-                        <h2>Signup/Login form</h2>
-                        <p>Make a selection down below </p> 
-                        </br>
-                        <p><a class="nav-link" href="{% url 'login_user' %}"><button type="button" class="btn btn-primary">Login to your account</a></button>
-                        </p>
-                        <p><a class="nav-link" href="{% url 'register_user' %}"><button type="button" class="btn btn-primary">Register your account</a></button>
-                        </p>
-                        </br>
+                    <div class="card-text mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ newsletter.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+                    
+                    {% if newsletter.journalist %}
+                        <div class="card-text mb-2">
+                            <small class="text-info">
+                                <i class="fas fa-user-edit me-1"></i>
+                                <strong>Journalist:</strong> {{ newsletter.journalist.username }}
+                            </small>
+                        </div>
+                    {% endif %}
+                    
+                    {% if newsletter.publisher %}
+                        <div class="card-text mb-3">
+                            <small class="text-success">
+                                <i class="fas fa-building me-1"></i>
+                                <strong>Publisher:</strong> {{ newsletter.publisher.name }}
+                            </small>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-auto">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'newsletter_detail' pk=newsletter.pk %}" class="btn btn-success w-100">
+                                <i class="fas fa-eye me-2"></i>Read Newsletter
+                            </a>
+                        {% else %}
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'login_user' %}" class="btn btn-success">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login to Read
+                                </a>
+                                <a href="{% url 'register_user' %}" class="btn btn-outline-success">
+                                    <i class="fas fa-user-plus me-2"></i>Register
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="card">
+                <div class="card-body py-5">
+                    <i class="fas fa-envelope fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">No newsletters available at the moment</h5>
+                    <p class="text-muted">Subscribe to receive the latest newsletters!</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- User Dashboard Section -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    {% if user.is_authenticated %}
+                        <h3 class="text-gradient mb-4">
+                            <i class="fas fa-user-circle me-2"></i>Welcome back, {{ user.username }}!
+                        </h3>
+                        <p class="text-muted mb-4">Choose an action below to get started</p>
                         
-                    {% endif %} 
-                    <p>Hyper News is a news website that provides the latest news and updates on various topics. Stay informed with our articles and newsletters.</p>
+                        <div class="row g-3">
+                            {% if user|journalist_pem %}
+                                <div class="col-md-6">
+                                    <a href="{% url 'article_create' %}" class="btn btn-primary btn-lg w-100 mb-2">
+                                        <i class="fas fa-plus-circle me-2"></i>Create Article
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{% url 'journalist_dashboard' %}" class="btn btn-success btn-lg w-100 mb-2">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                    </a>
+                                </div>
+                            {% elif user|editor_pem %}
+                                <div class="col-md-6">
+                                    <a href="{% url 'dashboard_editor' %}" class="btn btn-success btn-lg w-100 mb-2">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Editor Dashboard
+                                    </a>
+                                </div>
+                            {% elif user|reader_pem %}
+                                <div class="col-md-6">
+                                    <a href="{% url 'reader_dashboard' %}" class="btn btn-success btn-lg w-100 mb-2">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Reader Dashboard
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="col-12">
+                                <a href="{% url 'logout_user' %}" class="btn btn-outline-warning">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <h3 class="text-gradient mb-4">
+                            <i class="fas fa-user-plus me-2"></i>Join Hyper News
+                        </h3>
+                        <p class="text-muted mb-4">Create an account or login to access all features</p>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{% url 'login_user' %}" class="btn btn-primary btn-lg w-100 mb-2">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'register_user' %}" class="btn btn-success btn-lg w-100 mb-2">
+                                    <i class="fas fa-user-plus me-2"></i>Register
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-muted">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Hyper News is your trusted source for the latest news and insights from around the world.
+                            </p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
-    </footer>
-</body>
+</div>
+{% endblock %}
 
 

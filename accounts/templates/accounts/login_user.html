@@ -1,47 +1,174 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Login user{% endblock %}
+{% block title %}Login - Hyper News{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container-fluid py-5">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg p-4">
-                <h2 class="card-title text-center mb-4">Login to Your Account</h2>
+        <div class="col-md-6 col-lg-5 col-xl-4">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>Welcome Back
+                    </h3>
+                    <p class="mb-0 opacity-75">Sign in to your Hyper News account</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Login Error:</strong> Please check your username and password.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
 
-                {% if form.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        Please correct the errors below.
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-2"></i>Username
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="username" 
+                                       name="username" 
+                                       placeholder="Enter your username"
+                                       required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter your username.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="Enter your password"
+                                       required>
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter your password.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-muted mb-2">
+                                Don't have an account? 
+                                <a href="{% url 'register_user' %}" class="text-decoration-none fw-bold">
+                                    Register here
+                                </a>
+                            </p>
+                            
+                            <p class="text-muted mb-0">
+                                <a href="{% url 'reset_password' %}" class="text-decoration-none">
+                                    <i class="fas fa-key me-1"></i>Forgot your password?
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your data is protected with industry-standard encryption
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Additional Info Card -->
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">
+                        <i class="fas fa-info-circle me-2"></i>Why Join Hyper News?
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-newspaper me-1"></i>Latest News
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>Community
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-bell me-1"></i>Notifications
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-star me-1"></i>Premium Content
+                            </small>
+                        </div>
                     </div>
-                {% endif %}
-
-                <form method="post" class="form">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-
-                    <p>
-                        <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
-                    </p>
-
-                    <p class="text-center mt-3">
-                        Don't have an account? <a href="{% url 'register_user' %}">Register here</a>
-                    </p>
-
-                    <p class="text-center mt-3">
-                        <a href="{% url 'reset_password' %}">Forgot your password?</a>
-                    </p>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Password toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+</script>
 {% endblock %}
