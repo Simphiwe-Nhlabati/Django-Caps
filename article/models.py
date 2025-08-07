@@ -42,7 +42,8 @@ class Article(models.Model):
                                      related_name='article_editors')
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
-    
+    sentiment = models.CharField(max_length=20, default='Neutral')
+
     def __str__(self):
         return f"title:{self.title}, journalist:{self.journalist}"
     

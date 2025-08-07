@@ -170,6 +170,23 @@
                             <a href="{% url 'dashboard_editor' %}" class="btn btn-success">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             </a>
+                            {% if article.sentiment == "Positive" %}
+                                <span class="btn btn-success sentiment-badge">
+                                    <i class="fas fa-smile me-1"></i>Positive
+                                </span>
+                            {% elif article.sentiment == "Negative" %}
+                                <span class="btn btn-danger sentiment-badge">
+                                    <i class="fas fa-frown me-1"></i>Negative
+                                </span>
+                            {% elif article.sentiment == "Neutral" %}
+                                <span class="btn btn-secondary sentiment-badge">
+                                    <i class="fas fa-meh me-1"></i>Neutral
+                                </span>
+                            {% else %}
+                                <span class="btn btn-light sentiment-badge">
+                                    <i class="fas fa-question-circle me-1"></i>Unknown
+                                </span>
+                            {% endif %}
                             {% if not article.approved %}
                                 <form action="{% url 'approve_article' pk=article.pk %}" method="post" class="d-inline">
                                     {% csrf_token %}
@@ -241,6 +258,21 @@
     margin: 1.5rem 0;
     font-style: italic;
     color: var(--text-secondary);
+}
+
+/* Sentiment Badge Styles */
+.sentiment-badge {
+    font-weight: 500;
+    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    margin-right: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.sentiment-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 </style>
 {% endblock %}
