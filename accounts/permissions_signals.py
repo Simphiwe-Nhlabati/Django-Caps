@@ -35,8 +35,8 @@ def assign_user_to_group(sender, instance, created, **kwargs):
 def assign_permissions_to_group(group, codename_list):
     """Assign a list of permission codenames to a group."""
     models = {
-        'article': apps.get_model('articles', 'Article'),
-        'newsletter': apps.get_model('articles', 'Newsletter'),
+        'article': apps.get_model('article', 'Article'),
+        'newsletter': apps.get_model('newsletter', 'Newsletter'),
     }
 
     for codename in codename_list:

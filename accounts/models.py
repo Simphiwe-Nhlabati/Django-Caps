@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.apps import apps
 
 
 # Create your models here.
@@ -67,62 +64,6 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return f"name:{self.first_name} last name:{self.last_name} username:({self.username})"
-    
-
-# @receiver(post_save, sender=CustomUser)        
-# def assign_user_to_group(sender, instance, created, **kwargs):
-#     if created:
-#         group_name = instance.position.capitalize()
-#         group, created = Group.objects.get_or_create(name=group_name)
-#         instance.groups.add(group)
-
-#         if group_name == 'Reader':
-#             # Can only view articles and newsletters.
-#             article_model = apps.get_model('article', 'Article')
-#             newsletter_model = apps.get_model('article', 'Newsletter')
-
-#             view_article_permission = Permission.objects.get(codename='article_list', content_type__app_label='articles', content_type__model='article')
-#             view_newsletter_permission = Permission.objects.get(codename='newsletter_list', content_type__app_label='articles', content_type__model='newsletter')
-
-#             group.permissions.add(view_article_permission, view_newsletter_permission)
-
-#         elif group_name == 'Editor':
-#             # Can view, update, and delete articles and newsletters.
-#             article_model = apps.get_model('articles', 'Article')
-#             newsletter_model = apps.get_model('articles', 'Newsletter')
-
-#             view_article_permission = Permission.objects.get(codename='article_list', content_type__app_label='articles', content_type__model='article')
-#             change_article_permission = Permission.objects.get(codename='article_update', content_type__app_label='articles', content_type__model='article')
-#             delete_article_permission = Permission.objects.get(codename='article_delete', content_type__app_label='articles', content_type__model='article')
-
-#             view_newsletter_permission = Permission.objects.get(codename='newsletter_list', content_type__app_label='articles', content_type__model='newsletter')
-#             change_newsletter_permission = Permission.objects.get(codename='newsletter_update', content_type__app_label='articles', content_type__model='newsletter')
-#             delete_newsletter_permission = Permission.objects.get(codename='newsletter_delete', content_type__app_label='articles', content_type__model='newsletter')
-
-#             group.permissions.add(
-#                 view_article_permission, change_article_permission, delete_article_permission,
-#                 view_newsletter_permission, change_newsletter_permission, delete_newsletter_permission
-#             )
-
-#         elif group_name == 'Journalist':
-#             # Can create, view, update, and delete articles and newsletters.
-#             article_model = apps.get_model('articles', 'Article')
-#             newsletter_model = apps.get_model('articles', 'Newsletter')
-
-#             add_article_permission = Permission.objects.get(codename='article_create', content_type__app_label='articles', content_type__model='article')
-#             view_article_permission = Permission.objects.get(codename='article_list', content_type__app_label='articles', content_type__model='article')
-#             change_article_permission = Permission.objects.get(codename='article_update', content_type__app_label='articles', content_type__model='article')
-#             delete_article_permission = Permission.objects.get(codename='article_delete', content_type__app_label='articles', content_type__model='article')
-
-#             add_newsletter_permission = Permission.objects.get(codename='newsletter_create', content_type__app_label='articles', content_type__model='newsletter')
-#             view_newsletter_permission = Permission.objects.get(codename='newsletter_list', content_type__app_label='articles', content_type__model='newsletter')
-#             change_newsletter_permission = Permission.objects.get(codename='newsletter_update', content_type__app_label='articles', content_type__model='newsletter')
-#             delete_newsletter_permission = Permission.objects.get(codename='newsletter_delete', content_type__app_label='articles', content_type__model='newsletter')
-
-#             group.permissions.add(
-#                 add_article_permission, view_article_permission, change_article_permission, delete_article_permission,
-#                 add_newsletter_permission, view_newsletter_permission, change_newsletter_permission, delete_newsletter_permission
-#             )
    
  
 class ResetToken(models.Model):

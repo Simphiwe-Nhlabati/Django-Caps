@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # 'article.apps.ArticlesConfig',
+    # 'accounts.apps.AccountsConfig',
     'django.contrib.staticfiles',
     'rest_framework',
     'hyper_news',

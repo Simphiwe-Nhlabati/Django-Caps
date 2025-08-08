@@ -63,8 +63,8 @@
 # User = get_user_model()
 
 
-# user = User.objects.get(username='Simreads650')
-# group, created = Group.objects.get_or_create(name='Reader')
+# user = User.objects.get(username='Simjournalist978')
+# group, created = Group.objects.get_or_create(name='Journalist')
 
 
 # user.groups.add(group)
@@ -74,3 +74,7 @@
 
 # print(user.groups.all()) 
 
+
+# from accounts.models import CustomUser
+# u = CustomUser.objects.create_user(username='heheeditorv500', password='passhahakey890', position='Editor')
+# u.get_group_permissions()

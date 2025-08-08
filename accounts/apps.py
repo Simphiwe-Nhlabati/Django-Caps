@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = 'accounts'
 
     def ready(self):
-        import accounts.permissions_signals
+        from . import permissions_signals

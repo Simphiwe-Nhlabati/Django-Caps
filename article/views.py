@@ -101,7 +101,7 @@ class Article_Generate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = ArticleForm
     template_name = 'article/article_form.html'
     context_object_name = 'articles'
-    success_url = reverse_lazy('article_list')
+    success_url = reverse_lazy('home_view')
     permission_required = 'article.article_create'
 
     def has_permission(self):

@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Newsletter
 from .forms import NewsletterForm
 from reader.models import Subscriptions
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -66,8 +66,14 @@ class Newsletter_Generate(LoginRequiredMixin, PermissionRequiredMixin, CreateVie
     form_class = NewsletterForm
     template_name = 'newsletter/newsletter_form.html'
     context_object_name = 'newsletters'
-    success_url = reverse_lazy('newsletter_list')
+    success_url = reverse_lazy('home_view')
     permission_required = 'newsletter.newsletter_create'
+    
+    def has_permission(self):
+        return super().has_permission() and journalist_pem(self.request.user)
+
+    def get_success_url(self):
+        return reverse('journalist_dashboard')
 
     def form_valid(self, form):
         form.instance.journalist = self.request.user
@@ -85,11 +91,12 @@ class Newsletter_Update(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
     def has_permission(self):
         user = self.request.user
+        if not super().has_permission():
+            return False
         newsletter = self.get_object()
-
-        if user.has_perm(self.permission_required):
+        if editor_pem(user):
             return True
-        elif user.groups.filter(name='Journalist').exists():
+        if journalist_pem(user):
             return newsletter.journalist == user
         return False
 
@@ -102,16 +109,17 @@ class Newsletter_Delete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
     model = Newsletter
     template_name = 'newsletter/newsletter_confirm_delete.html'
     context_object_name = 'newsletter'
-    success_url = reverse_lazy('newsletter_list')
+    success_url = reverse_lazy('home_view')
     permission_required = 'newsletter.newsletter_delete'
 
     def has_permission(self):
         user = self.request.user
+        if not super().has_permission():
+            return False
         newsletter = self.get_object()
-
-        if user.has_perm(self.permission_required):
+        if editor_pem(user):
             return True
-        elif user.groups.filter(name='Journalist').exists():
+        if journalist_pem(user):
             return newsletter.journalist == user
         return False
 
