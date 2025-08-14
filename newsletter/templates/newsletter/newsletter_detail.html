@@ -11,12 +11,12 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="alert alert-info">
-                <small>
+                {% comment %} <small>
                     <strong>Debug Info:</strong> 
                     Reader? {{ user|reader_pem }} | 
                     Editor? {{ user|editor_pem }} | 
                     Journalist? {{ user|journalist_pem }}
-                </small>
+                </small> {% endcomment %}
             </div>
         </div>
     </div>
@@ -61,14 +61,6 @@
                                         <i class="fas fa-user-edit text-info me-2"></i>
                                         <small class="text-muted">
                                             <strong>Journalist:</strong> {{ newsletter.journalist.username }}
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-building text-success me-2"></i>
-                                        <small class="text-muted">
-                                            <strong>Publisher:</strong> {{ newsletter.publisher.name }}
                                         </small>
                                     </div>
                                 </div>
@@ -174,7 +166,7 @@
                                 <i class="fas fa-edit me-2"></i>Edit Newsletter
                             </a>
                             {% if not newsletter.approved %}
-                                <form action="{% url 'newsletter_approve' pk=newsletter.pk %}" method="post" class="d-inline">
+                                <form action="{% url 'approve_newsletter' pk=newsletter.pk %}" method="post" class="d-inline">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-success">
                                         <i class="fas fa-check me-2"></i>Approve Newsletter

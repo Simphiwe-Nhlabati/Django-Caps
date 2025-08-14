@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from textblob import TextBlob
 from .models import Article
 
+
 @receiver(pre_save, sender=Article)
 def analyze_sentiment(sender, instance, **kwargs):
     if instance.content:
