@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'reader',
     'editor',
     'newsletter',
+    'comment',
+    'notification',
 ]
 
 MIDDLEWARE = [

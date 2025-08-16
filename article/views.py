@@ -2,11 +2,9 @@ from django.shortcuts import get_object_or_404, redirect
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView, DestroyAPIView
-# from django.urls import reverse_lazy
 from .models import Article
 from .forms import ArticleForm
 from reader.models import Subscriptions
-# from accounts.permissions import JournalistPem, EditorPem
 from .serializers import ArticleSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -14,9 +12,10 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from accounts.models import CustomUser
 from django.contrib import messages
-# from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy, reverse
-# from django import template
+from notification.models import Notification
+from comment.forms import CommentForm
+from comment.models import Comment, Bookmark
 
 
 # register = template.Library()
@@ -68,8 +67,33 @@ class Article_Detail(LoginRequiredMixin, DetailView):
         subscribed_journalists = subscriptions.journalist.all() if subscriptions else []
 
         context['subscribed_journalists'] = subscribed_journalists
-        return context
+        context['comment_form'] = CommentForm()
+        context['comments'] = Comment.objects.filter(article=self.get_object())
+        context['likes'] = self.get_object().likes.count()
+        context['dislikes'] = self.get_object().dislikes.count()
+        context['bookmarked'] = Bookmark.objects.filter(article=self.get_object(), user=self.request.user).exists()
+        context['liked'] = self.get_object().likes.filter(pk=self.request.user.pk).exists()
+        context['disliked'] = self.get_object().dislikes.filter(pk=self.request.user.pk).exists()
 
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = self.get_object()
+            comment.user = request.user
+            comment.save()
+            Notification.objects.create(
+                recipient=comment.article.journalist,
+                sender=request.user,
+                article=comment.article,
+                notification_type='comment',
+                message=f'{request.user.username} commented on your article: {comment.article.title}'
+            )
+            return redirect('article_detail', pk=self.get_object().pk)
+        return self.get(request, *args, **kwargs)
+    
 
 class Article_View_API(viewsets.ModelViewSet):
     # model = Publisher

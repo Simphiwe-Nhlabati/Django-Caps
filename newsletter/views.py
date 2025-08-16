@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +11,9 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from article.views import journalist_pem, editor_pem
-# from accounts.permissions import JournalistPem, EditorPem
+from notification.models import Notification
+from comment.forms import CommentForm
+from comment.models import Comment, Bookmark
 
 
 # Create your views here.
@@ -41,8 +43,52 @@ class Newsletter_Detail(LoginRequiredMixin, DetailView):
         subscribed_journalists = subscriptions.journalist.all() if subscriptions else []
 
         context['subscribed_journalists'] = subscribed_journalists
+        context['comment_form'] = CommentForm()
+        context['comments'] = Comment.objects.filter(newsletter=self.get_object())
+        context['likes'] = self.get_object().likes.count()
+        context['dislikes'] = self.get_object().dislikes.count()
+        context['bookmarked'] = Bookmark.objects.filter(newsletter=self.get_object(), user=self.request.user).exists()
+        context['liked'] = self.get_object().likes.filter(pk=self.request.user.pk).exists()
+        context['disliked'] = self.get_object().dislikes.filter(pk=self.request.user.pk).exists()
+
         return context
     
+    def post(self, request, *args, **kwargs):
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            # article = self.get_object()
+            comment.newsletter = self.get_object()
+            comment.user = request.user
+            comment.save()
+            Notification.objects.create(
+                recipient=comment.newsletter.journalist,
+                sender=request.user,
+                newsletter=comment.newsletter,
+                notification_type='comment',
+                message=f'{request.user.username} commented on your newsletter: {comment.newsletter.title}'
+            )
+            messages.success(request, "Comment added successfully.")
+            return redirect('newsletter_detail', pk=self.get_object().pk)
+        return self.get(request, *args, **kwargs)
+    
+    
+def post(self, request, *args, **kwargs):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.newsletter = self.get_object()
+        comment.user = request.user
+        comment.save()
+        Notification.objects.create(
+            recipient=comment.newsletter.journalist,
+            sender=request.user,
+            newsletter=comment.newsletter,
+            notification_type='comment',
+            message=f'{request.user.username} commented on your newsletter: {comment.newsletter.title}'
+        )
+        return redirect('newsletter_detail', pk=self.get_object().pk)
+    return self.get(request, *args, **kwargs)
 
 class Newsletter_View_API(viewsets.ModelViewSet):
     model = Newsletter

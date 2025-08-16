@@ -107,7 +107,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-4">
                     {% if user.is_authenticated and user|reader_pem %}
@@ -126,12 +125,18 @@
                                     </button>
                                 </form>
                             {% else %}
+                                {% if article.journalist %}
                                 <form action="{% url 'subscriptions_journalist' pk=article.journalist.pk %}" method="post" class="d-inline">
                                     {% csrf_token %}
                                     <button class="btn btn-success">
                                         <i class="fas fa-bell me-2"></i>Subscribe
                                     </button>
                                 </form>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>No journalist assigned to this article.
+                                </div>
+                                {% endif %}
                             {% endif %}
                         </div>
 
@@ -139,7 +144,7 @@
                         <!-- Journalist Actions -->
                         <div class="d-flex flex-wrap gap-2">
                             <a href="{% url 'article_update' pk=article.pk %}" class="btn btn-primary">
-                                <i class="fas fa-edit me-2"></i>Edit Article
+                                <i class="fas fa-edit me-2"></i>Edit article
                             </a>
                             <a href="{% url 'journalist_dashboard' %}" class="btn btn-success">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
@@ -148,7 +153,7 @@
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger" 
                                         onclick="return confirm('Are you sure you want to delete this article?')">
-                                    <i class="fas fa-trash me-2"></i>Delete Article
+                                    <i class="fas fa-trash me-2"></i>Delete article
                                 </button>
                             </form>
                         </div>
@@ -157,10 +162,7 @@
                         <!-- Editor Actions -->
                         <div class="d-flex flex-wrap gap-2">
                             <a href="{% url 'article_update' pk=article.pk %}" class="btn btn-primary">
-                                <i class="fas fa-edit me-2"></i>Edit Article
-                            </a>
-                            <a href="{% url 'dashboard_editor' %}" class="btn btn-success">
-                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                <i class="fas fa-edit me-2"></i>Edit article
                             </a>
                             {% if article.sentiment == "Positive" %}
                                 <span class="btn btn-success sentiment-badge">
@@ -183,7 +185,7 @@
                                 <form action="{% url 'approve_article' pk=article.pk %}" method="post" class="d-inline">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-success">
-                                        <i class="fas fa-check me-2"></i>Approve Article
+                                        <i class="fas fa-check me-2"></i>Approve article
                                     </button>
                                 </form>
                             {% endif %}
@@ -191,7 +193,7 @@
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger" 
                                         onclick="return confirm('Are you sure you want to delete this article?')">
-                                    <i class="fas fa-trash me-2"></i>Delete Article
+                                    <i class="fas fa-trash me-2"></i>Delete article
                                 </button>
                             </form>
                         </div>
@@ -214,6 +216,56 @@
                             </div>
                         </div>
                     {% endif %}
+                </div>
+            </div>
+
+            <!-- Comments and Actions -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">Comments and Reactions</h3>
+
+                    <!-- Like, Dislike, Bookmark Buttons -->
+                    <div class="d-flex justify-content-start align-items-center mb-4">
+                        <a href="{% url 'like_article' article.pk %}" class="btn btn-outline-success me-2">
+                            <i class="fas fa-thumbs-up"></i> Like ({{ article.likes_count }})
+                        </a>
+                        <a href="{% url 'dislike_article' article.pk %}" class="btn btn-outline-danger me-2">
+                            <i class="fas fa-thumbs-down"></i> Dislike ({{ article.dislikes_count }})
+                        </a>
+                        <a href="{% url 'bookmark_article' article.pk %}" class="btn btn-outline-primary">
+                            <i class="fas fa-bookmark"></i> {% if bookmarked %}Bookmarked{% else %}Bookmark{% endif %}
+                        </a>
+                    </div>
+
+                    <!-- Comment Form -->
+                    {% if user.is_authenticated %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ comment_form.as_p }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        </form>
+                    {% else %}
+                        <p><a href="{% url 'login_user' %}">Log in</a> to comment.</p>
+                    {% endif %}
+
+                    <hr class="my-4">
+
+                    <!-- Comments List -->
+                    {% for comment in comments %}
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="...">
+                            </div>
+                            <div class="ms-3">
+                                <div class="fw-bold">{{ comment.user.username }}</div>
+                                {{ comment.content }}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No comments yet.</p>
+                    {% endfor %}
                 </div>
             </div>
 

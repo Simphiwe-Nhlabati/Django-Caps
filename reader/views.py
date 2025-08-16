@@ -11,6 +11,7 @@ from article.models import Article
 from newsletter.models import Newsletter
 from article.serializers import ArticleSerializer
 from .models import Subscriptions
+from comment.models import Bookmark
 
 
 # Create your views here.
@@ -114,3 +115,8 @@ def unsubscriptions_publisher(request, pk):
     request.user.subscribed_publishers.remove(publisher)
     messages.success(request, f'Unsubscribed from publisher: {publisher.username}')
     return redirect('reader_dashboard')
+
+@login_required
+def reader_bookmarks(request):
+    bookmarks = Bookmark.objects.filter(user=request.user)
+    return render(request, 'reader/bookmarks.html', {'bookmarks': bookmarks})

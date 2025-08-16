@@ -43,9 +43,19 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
     sentiment = models.CharField(max_length=20, default='Neutral')
+    likes = models.ManyToManyField(User, related_name='article_likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='article_dislikes', blank=True)
 
     def __str__(self):
         return f"title:{self.title}, journalist:{self.journalist}"
+    
+    @property
+    def likes_count(self):
+        return self.likes.count()
+
+    @property
+    def dislikes_count(self):
+        return self.dislikes.count()
     
     class Meta:
         permissions = (
@@ -55,4 +65,5 @@ class Article(models.Model):
             ('article_delete', 'Can delete article'),
         )
     
+
 

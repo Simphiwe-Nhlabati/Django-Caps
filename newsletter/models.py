@@ -1,6 +1,10 @@
 from django.db import models
 from accounts.models import CustomUser
 # from article.models import Publisher
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 # Create your models here.
@@ -18,9 +22,20 @@ class Newsletter(models.Model):
                                    related_name='newsletters_jour')
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    sentiment = models.CharField(max_length=20, default='Neutral')
+    likes = models.ManyToManyField(User, related_name='newsletter_likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='newsletter_dislikes', blank=True)
     
     def __str__(self):
         return f"title:{self.title}, publisher:{self.publisher.name}"
+    
+    @property
+    def likes_count(self):
+        return self.likes.count()
+
+    @property
+    def dislikes_count(self):
+        return self.dislikes.count()
     
     class Meta:
         permissions = (

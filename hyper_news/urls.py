@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('publisher.urls')),
     path('', include('reader.urls')),
     path('', include('journalist.urls')),
+    path('', include('comment.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
