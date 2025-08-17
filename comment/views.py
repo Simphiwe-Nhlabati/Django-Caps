@@ -7,6 +7,7 @@ from notification.models import Notification
 from comment.forms import CommentForm
 from comment.models import Comment
 from django.shortcuts import render
+from django.contrib import messages
 
 
 @login_required
@@ -173,3 +174,88 @@ def bookmark_newsletter(request, pk):
     else:
         Bookmark.objects.create(newsletter=newsletter, user=request.user)
     return redirect('newsletter_detail', pk=pk)
+
+
+@login_required
+def edit_comment_article(request, pk):
+    """Edit an existing comment on an article. Only the comment owner can edit."""
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comment.article:
+        messages.error(request, 'Invalid comment reference.')
+        return redirect('home_view')
+
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to edit this comment.')
+        return redirect('article_detail', pk=comment.article.pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Comment updated successfully.')
+        else:
+            messages.error(request, 'Please correct the errors in the form.')
+        return redirect('article_detail', pk=comment.article.pk)
+
+    # For non-POST requests, redirect back to the article detail
+    return redirect('article_detail', pk=comment.article.pk)
+
+
+@login_required
+def delete_comment_article(request, pk):
+    """Delete an existing comment on an article. Only the comment owner can delete."""
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comment.article:
+        messages.error(request, 'Invalid comment reference.')
+        return redirect('home_view')
+
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to delete this comment.')
+        return redirect('article_detail', pk=comment.article.pk)
+
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'Comment deleted successfully.')
+    return redirect('article_detail', pk=comment.article.pk)
+
+
+@login_required
+def edit_comment_newsletter(request, pk):
+    """Edit an existing comment on a newsletter. Only the comment owner can edit."""
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comment.newsletter:
+        messages.error(request, 'Invalid comment reference.')
+        return redirect('home_view')
+
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to edit this comment.')
+        return redirect('newsletter_detail', pk=comment.newsletter.pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Comment updated successfully.')
+        else:
+            messages.error(request, 'Please correct the errors in the form.')
+        return redirect('newsletter_detail', pk=comment.newsletter.pk)
+
+    return redirect('newsletter_detail', pk=comment.newsletter.pk)
+
+
+@login_required
+def delete_comment_newsletter(request, pk):
+    """Delete an existing comment on a newsletter. Only the comment owner can delete."""
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comment.newsletter:
+        messages.error(request, 'Invalid comment reference.')
+        return redirect('home_view')
+
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to delete this comment.')
+        return redirect('newsletter_detail', pk=comment.newsletter.pk)
+
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'Comment deleted successfully.')
+    return redirect('newsletter_detail', pk=comment.newsletter.pk)

@@ -75,6 +75,17 @@ class Article_Detail(LoginRequiredMixin, DetailView):
         context['liked'] = self.get_object().likes.filter(pk=self.request.user.pk).exists()
         context['disliked'] = self.get_object().dislikes.filter(pk=self.request.user.pk).exists()
 
+        # Support inline comment editing without JavaScript via ?edit_comment=<id>
+        edit_comment_id = self.request.GET.get('edit_comment')
+        if edit_comment_id:
+            try:
+                edit_comment = Comment.objects.get(pk=edit_comment_id, article=self.get_object())
+                if edit_comment.user_id == self.request.user.id:
+                    context['edit_comment_id'] = edit_comment.pk
+                    context['edit_comment_form'] = CommentForm(instance=edit_comment)
+            except Comment.DoesNotExist:
+                pass
+
         return context
     
     def post(self, request, *args, **kwargs):
@@ -91,6 +102,7 @@ class Article_Detail(LoginRequiredMixin, DetailView):
                 notification_type='comment',
                 message=f'{request.user.username} commented on your article: {comment.article.title}'
             )
+            messages.success(request, "Comment added successfully.")
             return redirect('article_detail', pk=self.get_object().pk)
         return self.get(request, *args, **kwargs)
     

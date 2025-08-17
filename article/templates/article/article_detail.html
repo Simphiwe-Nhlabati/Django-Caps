@@ -258,9 +258,33 @@
                             <div class="flex-shrink-0">
                                 <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="...">
                             </div>
-                            <div class="ms-3">
-                                <div class="fw-bold">{{ comment.user.username }}</div>
-                                {{ comment.content }}
+                            <div class="ms-3 w-100">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="fw-bold">{{ comment.user.username }}</div>
+                                    <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+
+                                {% if edit_comment_id and edit_comment_id == comment.pk %}
+                                    <form action="{% url 'edit_comment_article' comment.pk %}" method="post" class="mt-2">
+                                        {% csrf_token %}
+                                        {{ edit_comment_form.as_p }}
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                            <a href="{% url 'article_detail' article.pk %}" class="btn btn-sm btn-secondary">Cancel</a>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <div class="mt-1">{{ comment.content }}</div>
+                                    {% if user.is_authenticated and comment.user_id == user.id %}
+                                        <div class="mt-2 d-flex gap-2">
+                                            <a href="{% url 'article_detail' article.pk %}?edit_comment={{ comment.pk }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            <form action="{% url 'delete_comment_article' comment.pk %}" method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                     {% empty %}
